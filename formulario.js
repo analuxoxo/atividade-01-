@@ -1,57 +1,35 @@
 let readline = require('readline-sync')
 
-console.log("---------Formulário de (Peter)----------")
+console.log('\ --------------FORMULARIO DE JUJU ----------------')
 
-///////////////////////////////////////////////////////
+let nome = readline.question('qual seu nome? :')
 
-let nome = readline.question("Qual é o seu nome?")
-  console.log("Ola",nome)
+// pergunta o ano de nascimento // calcula a idade
 
-let dataNascimento = readline.question("Digite sua data de nascimento em (formato AAAA-MM-DD):")
- console.log("nasci em: ",dataNascimento)
+let dataNascimento = readline.question('Qual sua data de nascimento? (DD/MM/AAAA): ')
 
-let telefone = readline.question("Digite seu número de telefone")
- console.log("meu número é: ",telefone)
+let anoNascimento = parseInt(dataNascimento.split('/')[2]);
+let anoAtual = 2025
+let idade = anoAtual - anoNascimento
 
-let temAnimal = readline.question("Você tem animal em casa? (sim/não)") 
+// Pergunta se tem animal de estimacao
 
- let quantidadeAnimais = 4;
-  if(temAnimal == "sim") {  
+let temPet= readline.question('Voce tem animal de estimacao? (sim/nao) : ')
 
-quantidadeAnimais = (readline.question("Quantos animais você tem?"))
- console.log("Quantidade de animais: ",quantidadeAnimais)
+let qtdPets = 0;
 
- }
+ if (temPet === 'sim') {
+    qtdPets = readline.question('Quantos animais voce tem? ');
 
-let idadepenal = 2025 - dataNascimento
-  if(idadepenal >= 18){
+console.log('\n=== INFORMAÇÕES DE JUJU ===');
+console.log(`Nome: ${nome}`);
+console.log(`Data de nascimento: ${dataNascimento}`);
+console.log(`Idade: ${idade}`);
+console.log(`Tem pet: ${temPet}`);
+if (temPet === 'sim') {
+    console.log(`Quantidade de pets: ${qtdPets}`);
+}
 
- console.log("maior de idade aff")
+console.log('-----------------------------------------------');
 
-  }else{
-
- console.log(" menor de idade uhuu")
-
- }
-
- ///////////////DADOS FINAIS///////////////
-
-console.log("\n===== RESUMO DO FORMULÁRIO =====")
-
-console.log("Nome: " + nome)
-
-console.log("Data de nascimento: " + dataNascimento)
-
-console.log("Telefone: " + telefone)
-
-console.log("tem animal em casa?" (temAnimal== "sim" ? "Sim" : "Não"))
-
-if (temAnimal == "sim") {
-    console.log("Quantidade de animais: " + quantidadeAnimais);
-
-  }
-console.log("É maior de idade? " + (idadepenal ? "Sim" : "Não"))
-
-
-
-
+}
