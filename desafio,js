@@ -1,15 +1,27 @@
+//Equipe 01:
+//          Americo Alves
+//          Ana Luiza
+//          Rafaella Guedes
+//          Robson Valentim
+//          Suzane Moura
+
 import promptSync from "prompt-sync";
 const prompt = promptSync({ sigint: true });
 
-//////////////// CLIQUE AQUI PARA IR PARA O MENU!! //////////////////////
-
+// ==============================================================================
+// FUNÇÕES DE MENU
+//Essas funções servem para ficar exibindo o texto na tela sem precisar digitar 
+// duas vezes cada uma delas.
+// ==============================================================================
 function cabecalho() {
     console.clear();
-    console.log("               Sorveteria Oásis do Sabor          ");
-    console.log("******************************************************\n");
+    console.log("***********************************************");
+    console.log("               Sorveteria do Bairro            ");
+    console.log("***********************************************\n");
 }
 
 function menuPrincipal() {
+    console.log("===============================");
     console.log("       MENU PRINCIPAL          ");
     console.log("===============================");
     console.log("1 - Já sou cliente");
@@ -22,8 +34,8 @@ function produtos() {
     console.clear();
     cabecalho();
     console.log("Escolha o tipo de produto: ");
-    console.log("- casquinha");
-    console.log("- noPote");
+    console.log("- casquinha (R$5)");
+    console.log("- pote (R$7)");
     console.log("========================================");
 }
 
@@ -34,6 +46,7 @@ function sabores() {
     console.log("- creme");
     console.log("- morango");
     console.log("- chocolate");
+    console.log("- doce de leite");
     console.log("========================================");
 }
 
@@ -41,9 +54,10 @@ function adicionais() {
     console.clear();
     cabecalho();
     console.log("Escolha seu adicional: ");
-    console.log("- biscoito");
-    console.log("- paçoca");
-    console.log("- jujuba");
+    console.log("- biscoito (+R$2)");
+    console.log("- paçoca (+R$2)");
+    console.log("- jujuba (+R$2)");
+    console.log("- sem adicionais");
     console.log("========================================");
 }
 
@@ -51,9 +65,47 @@ function caldas() {
     console.clear();
     cabecalho();
     console.log("Escolha sua calda: ");
-    console.log("- morango");
-    console.log("- chocolate");
+    console.log("- morango (+R$1)");
+    console.log("- chocolate (+R$1)");
+    console.log("- sem calda");
     console.log("========================================");
+}
+
+// ==============================================================================
+// FUNÇÃO DE PAGAMENTO
+// Essa função exibe a forma de pagamento escolhida, caso seja em dinheiro, exibe o troco
+// ==============================================================================
+function pagamento(valorTotal) {
+    console.log("====================================")
+    console.log("\n Formas de Pagamento ");
+    console.log("====================================")
+    console.log("1 - Dinheiro");
+    console.log("2 - Cartão");
+    console.log("3 - Pix");
+    const opcao = prompt("Escolha a forma de pagamento: ");
+
+    switch (opcao) {
+        case '1': {
+            const valorPago = parseFloat(prompt("Digite o valor pago: R$ "));
+            if (valorPago >= valorTotal) {
+                const troco = valorPago - valorTotal;
+                console.log(`Pagamento realizado! Troco: R$ ${troco.toFixed(2)}`);
+            } else {
+                console.log("Valor insuficiente! Pedido cancelado.");
+            }
+            break;
+        }
+        case '2':
+            console.log("Pagamento no cartão aprovado!");
+            break;
+        case '3':
+            console.log("Pagamento via Pix confirmado!");
+            break;
+        default:
+            console.log("Opção inválida. Tente novamente.");
+            pagamento(valorTotal); // chama de novo até escolher corretamente
+            break;
+    }
 }
 
 // ==============================================================================
@@ -62,41 +114,40 @@ function caldas() {
 
 // Array de clientes inicial
 let clientes = [
-    ["12159876333", "José da Silva"],
+    ["00000000000", "José da Silva"],
     ["11111111111", "Maria José"]
 ];
 
 let sair = false;
-while (!sair) {
+while (!sair) { //enquanto sair for false o laço seguirá repetindo
     cabecalho();
     menuPrincipal();
     let opcao = prompt("Digite o número da sua opção: ");
 
     switch (opcao) {
-        case '1': { // novo cliente
+        case '1': {
             console.log("\n--- Login de Cliente ---");
             const cpf = prompt("Digite seu CPF para login: ");
             let clienteEncontrado = null;
 
-            // Demonstração de Array: Percorrendo o array com um loop 'for'
             for (let i = 0; i < clientes.length; i++) {
-                // Se o CPF na posição [i][0] do array for igual ao digitado...
                 if (clientes[i][0] === cpf) {
-                    clienteEncontrado = clientes[i]; // Achamos! Guardamos o cliente.
-                    break; // sai do loop
+                    clienteEncontrado = clientes[i];
+                    break;
                 }
             }
-            
-            if (clienteEncontrado) {
+
+            if (clienteEncontrado) { //se clienteEncontrado não é mais null
                 console.log(`\nBem-vindo(a) de volta, ${clienteEncontrado[1]}!`);
                 prompt("Pressione Enter para montar seu sorvete...");
 
-                // --- Lógica do Pedido ---
                 const pedido = [];
+                let total = 0;
 
                 produtos();
                 const tipoProduto = prompt("Digite o tipo escolhido: ");
                 pedido.push(tipoProduto);
+                total += (tipoProduto === "casquinha") ? 5 : 7;
 
                 sabores();
                 const saborEscolhido = prompt("Digite o sabor escolhido: ");
@@ -105,19 +156,22 @@ while (!sair) {
                 adicionais();
                 const adicionalEscolhido = prompt("Digite o adicional escolhido: ");
                 pedido.push(adicionalEscolhido);
+                if (adicionalEscolhido !== "sem adicionais") total += 2;
 
                 caldas();
                 const caldaEscolhida = prompt("Digite a calda escolhida: ");
                 pedido.push(caldaEscolhida);
+                if (caldaEscolhida !== "sem calda") total += 1;
 
                 cabecalho();
                 console.log(`\n--- Resumo do Pedido de ${clienteEncontrado[1]} ---`);
-                console.log(`Produto: ${pedido[0]}`);n
+                console.log(`Produto: ${pedido[0]}`);
                 console.log(`Sabor: ${pedido[1]}`);
                 console.log(`Adicional: ${pedido[2]}`);
                 console.log(`Calda: ${pedido[3]}`);
-                console.log("\nPedido concluído com sucesso!");
+                console.log(`Total a pagar: R$ ${total.toFixed(2)}`);
 
+                pagamento(total); // chama a função de pagamento
             } else {
                 console.log("\nCPF não encontrado.");
             }
@@ -130,19 +184,19 @@ while (!sair) {
             const novoNome = prompt("Digite seu nome completo: ");
             const novoCpf = prompt("Digite seu CPF (apenas números): ");
 
-            // Demonstração de Array: Adicionando um novo cliente com .push()
             const novoCliente = [novoCpf, novoNome];
             clientes.push(novoCliente);
 
             console.log(`Cadastro realizado com sucesso, ${novoNome}!`);
             prompt("Pressione Enter para montar seu sorvete...");
 
-            // --- Lógica do Pedido  ---
             const pedido = [];
+            let total = 0;
 
             produtos();
             const tipoProduto = prompt("Digite o tipo escolhido: ");
             pedido.push(tipoProduto);
+            total += (tipoProduto === "casquinha") ? 5 : 7;
 
             sabores();
             const saborEscolhido = prompt("Digite o sabor escolhido: ");
@@ -151,10 +205,12 @@ while (!sair) {
             adicionais();
             const adicionalEscolhido = prompt("Digite o adicional escolhido: ");
             pedido.push(adicionalEscolhido);
+            if (adicionalEscolhido !== "sem adicionais") total += 2;
 
             caldas();
             const caldaEscolhida = prompt("Digite a calda escolhida: ");
             pedido.push(caldaEscolhida);
+            if (caldaEscolhida !== "sem calda") total += 1;
 
             cabecalho();
             console.log(`\n--- Resumo do Pedido de ${novoNome} ---`);
@@ -162,14 +218,16 @@ while (!sair) {
             console.log(`Sabor: ${pedido[1]}`);
             console.log(`Adicional: ${pedido[2]}`);
             console.log(`Calda: ${pedido[3]}`);
-            console.log("\nPedido concluído com sucesso!");
+            console.log(`Total a pagar: R$ ${total.toFixed(2)}`);
+
+            pagamento(total); //  chama a função de pagamento
 
             prompt("\nPressione Enter para voltar ao menu principal...");
             break;
         }
 
         case '3':
-            sair = true; // Sinaliza que o loop deve parar
+            sair = true;
             break;
 
         default:
